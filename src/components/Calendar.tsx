@@ -12,9 +12,7 @@ export const daysInMonth = (year: number, month: number) =>
   new Date(year, month, 0).getDate();
 
 const Calendar: FC<calendarType> = () => {
-  const CalendarCellComponentFactory: FC<calendarCellObjectType> = ({
-    currentMonthDays,
-  }) => {
+  const CalendarCellComponentFactory: FC<calendarCellObjectType> = ({currentMonthDays}) => {
     if (typeof currentMonthDays === "number") {
       const calendarCellObjects = Array(currentMonthDays).fill({
         test: "test",
