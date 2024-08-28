@@ -1,8 +1,20 @@
-import {FC} from 'react'
+import {Dispatch, FC, SetStateAction} from 'react'
+import { calendarCellType } from './Calendar';
 
-const EditCellModal: FC<{}> = () => {
+export type editCellType = {
+  cellData: undefined | calendarCellType,
+  setModalOpen: Dispatch<SetStateAction<boolean>>
+};
+
+const EditCellModal: FC<editCellType> = ({cellData, setModalOpen}) => {
   return (
-    <div></div>
+    <>
+    <span> {cellData?.day} </span>
+    <span> {cellData?.month} </span>
+    <span> {cellData?.year} </span>
+    <span> {cellData?.note.text} </span>
+    <span onClick={() => setModalOpen(false)}> [Close]</span>
+    </>
   )
 }
 

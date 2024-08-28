@@ -3,13 +3,12 @@ import Calendar from './Calendar';
 
 type dashboardType = any | 
 {
-    props : string | any
 };
 
 
 const Dashboard: React.FC<dashboardType> = () => {
   return (
-    <Calendar/>
+    <Calendar calendarData={[]}/>
   )
 }
 

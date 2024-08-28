@@ -1,19 +1,23 @@
 import { FC, useEffect, useState } from "react";
+import EditCellModal from "./EditCellModal";
+import { mockData } from "./mockData";
 
 export type calendarType = {
-  props: string | any;
+  calendarData: calendarCellType[] | any[];
 };
 
-export type calendarCell = {
-  dayNumber: number;
+export type calendarCellType = {
+  day: number,
+  month: number,
+  year: number,
   hasSchedule: boolean;
   hasNote: boolean;
   note: {
-      text: string;
+    text: string;
   };
   schedule: {
-      date: string;
-      details: {};
+    date: string;
+    details: {};
   };
 };
 
@@ -24,8 +28,23 @@ export type calendarCellObjectType = {
 const daysInMonth = (year: number, month: number) =>
   new Date(year, month, 0).getDate();
 
-const Calendar: FC<calendarType> = ({ }) => {
+const month = new Date().getMonth();
+const year = new Date().getFullYear();
 
+const Calendar: FC<calendarType> = ({ calendarData }) => {
+
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [calendarIndex, setCalendarIndex] = useState<number | undefined>();
+  const [currentMonthDays, setCurrentMonthDays] = useState<number>();
+
+  useEffect(() => {
+    setCurrentMonthDays(daysInMonth(year, month));
+  }, [month, year]);
+
+  const handleCalendarCellClick = (e: any, index: number) => {
+    setModalOpen(true);
+    setCalendarIndex(index);
+  };
 
   const CalendarCellComponentFactory: FC<calendarCellObjectType> = ({
     currentMonthDays,
@@ -34,10 +53,12 @@ const Calendar: FC<calendarType> = ({ }) => {
       // create cells of empty objects
       const calendarCellObjects = Array(currentMonthDays).fill({});
       const calendarCellObjectsFilled = calendarCellObjects.map(
-        (_cell, idx, _calendarCells) => {
+        (_cell, idx) => {
           return {
             //0 based index -> calendar based index (1 based)
-            dayNumber: idx + 1,
+            day: idx + 1,
+            month: 8,
+            year: 2024,
             hasSchedule: false,
             hasNote: true,
             note: { text: "test note" },
@@ -49,13 +70,15 @@ const Calendar: FC<calendarType> = ({ }) => {
 
       return (
         <div>
-          {calendarCellObjectsFilled.map((cell: calendarCell, index) => {
+          {calendarCellObjectsFilled.map((cell: calendarCellType, index) => {
             return (
-              <div onClick={(e) => handleCalendarCellClick(e, index) } key={index}>
-                {cell.dayNumber} &nbsp;
-                {cell.hasNote ? "hasNote:true " : "hasNote:false "}
-                {cell.hasSchedule ? "hasSchedule:true " : "hasSchedule:false "}
-                {cell?.note?.text}
+              <div
+                onClick={(e) => handleCalendarCellClick(e, index)}
+                key={index}>
+                {/* {cell?.hasNote ? "hasNote:true " : "hasNote:false "}
+                {cell?.hasSchedule ? "hasSchedule:true " : "hasSchedule:false "}
+                {cell?.note?.text} */}
+                {cell?.day}{cell.hasNote ? "*" : ""}
               </div>
             );
           })}
@@ -64,21 +87,16 @@ const Calendar: FC<calendarType> = ({ }) => {
     } else return <></>;
   };
 
-  const handleCalendarCellClick = (e: any, index: number) => {
-    console.log(index)
-  }
 
-  const [currentMonthDays, setCurrentMonthDays] = useState<number>();
-
-  useEffect(() => {
-    const month = new Date().getMonth();
-    const year = new Date().getFullYear();
-    setCurrentMonthDays(daysInMonth(year, month));
-  }, []);
 
   return (
     <div>
       <CalendarCellComponentFactory currentMonthDays={currentMonthDays} />
+      {modalOpen ? (
+        <EditCellModal setModalOpen={setModalOpen} cellData={mockData[1]} />
+      ) : (
+        <></>
+      )}
     </div>
   );
 };
