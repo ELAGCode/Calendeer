@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import EditCellModal from "./EditCellModal";
 import { mockData } from "./mockData";
-
+import { CSSProperties } from "react";
 export type calendarType = {
   calendarData: calendarCellType[] | any[];
 };
@@ -42,7 +42,7 @@ const Calendar: FC<calendarType> = ({ calendarData }) => {
     return {
       //0 based index -> calendar based index (1 based)
       day: idx + 1,
-      month: 8,
+      month: 9,
       year: 2024,
       hasSchedule: false,
       hasNote: true,
@@ -56,7 +56,7 @@ const Calendar: FC<calendarType> = ({ calendarData }) => {
     setCurrentMonthDays(daysInMonth(year, month));
   }, [month, year]);
 
-  const handleCalendarCellClick = (e: any, index: number) => {
+  const handleCalendarCellClick = (_: any, index: number) => {
     setModalOpen(true);
     setCalendarIndex(index);
   };
@@ -66,19 +66,22 @@ const Calendar: FC<calendarType> = ({ calendarData }) => {
   }) => {
     if (currentMonthDays) {
       return (
-        <div>
+        <div key={currentMonthDays}>
           {calendarCellObjectsFilled.map((cell: calendarCellType, index) => {
+            //Calendar individual cell
             return (
-              <div
+              <>
+              <span
+                style={CalendarStyles.calendarCellStyle}
                 onClick={(e) => handleCalendarCellClick(e, index)}
-                key={index}
-              >
+                key={index}>
                 {/* {cell?.hasNote ? "hasNote:true " : "hasNote:false "}
                 {cell?.hasSchedule ? "hasSchedule:true " : "hasSchedule:false "}
                 {cell?.note?.text} */}
                 {cell?.day}
-                {cell.hasNote ? "*" : ""}
-              </div>
+                {/* {cell.hasNote ? "*" : ""} */}
+              </span>
+              </>
             );
           })}
         </div>
@@ -87,41 +90,56 @@ const Calendar: FC<calendarType> = ({ calendarData }) => {
   };
 
   return (
-    <div>
+    <span style={CalendarStyles.calendarCellContainerStyle}>
       <CalendarCellComponentFactory currentMonthDays={currentMonthDays} />
       {modalOpen ? (
         <>
           {/* modal shadow */}
-          <span
-            style={{
-              backgroundColor: "black",
-              position: "absolute",
-              opacity: 0.5,
-              padding: "100vh",
-              left: "0",
-              transform: "translateY(-100vh)",
-              overflow: "hidden",
-            }}
-          ></span>
-          <span
-            // edit cell container style
-            style={{
-              left: "30%",
-              right: "30%",
-              position: "absolute",
-              transform: "translateY(-30em)",
-              backgroundColor: "darkgray",
-              overflow: "hidden",
-            }}
-          >
-            <EditCellModal setModalOpen={setModalOpen} cellData={calendarCellObjectsFilled[calendarIndex!]} />
+          <span style={CalendarStyles.editModalShadowStyle}></span>
+          {/* edit cell container style */}
+          <span style={CalendarStyles.editModalStyle}>
+            <EditCellModal
+              setModalOpen={setModalOpen}
+              cellData={
+                calendarIndex
+                  ? calendarCellObjectsFilled[calendarIndex]
+                  : ({} as calendarCellType)
+              }
+            />
           </span>
         </>
       ) : (
         <></>
       )}
-    </div>
+    </span>
   );
 };
+
+export const CalendarStyles = {
+  editModalStyle: {
+    left: "30%",
+    right: "30%",
+    position: "absolute",
+    transform: "translateY(-10%)",
+    backgroundColor: "darkgray",
+    overflowX: 'hidden',
+  } as CSSProperties,
+  editModalShadowStyle: {
+    backgroundColor: "black",
+    position: "absolute",
+    opacity: 0.5,
+    padding: "100%",
+    left: "0",
+    overflowX: 'hidden',
+    transform: "translateY(-100vh)",
+    overflow: "hidden",
+  } as CSSProperties,
+  calendarCellStyle: {
+  border: "1px solid gray",
+  } as CSSProperties,
+  calendarCellContainerStyle: {
+  display: "grid"
+  } as CSSProperties
+}
 
 export default Calendar;

@@ -1,4 +1,4 @@
-import { Dispatch, FC, SetStateAction } from "react";
+import { Dispatch, FC, SetStateAction, useState } from "react";
 import { calendarCellType } from "./Calendar";
 
 export type editCellType = {
@@ -7,22 +7,28 @@ export type editCellType = {
 };
 
 const EditCellModal: FC<editCellType> = ({ cellData, setModalOpen }) => {
+
+  const [calendarDetailText, setCalendarDetailText] = useState();
+
+  const handleSubmit = (e) => {
+    console.log(e.target)
+  }
+
   return (
     <span>
       <div>
         <h3>
-          Edit cell {cellData?.day}
           <span
+          // 'Close' button style
             style={{
+              display: "flex",
               fontSize: "12px",
-              position: "absolute",
-              marginLeft: "30%",
-              marginTop: "5px",
+              flexDirection: "row-reverse",
+              paddingRight: "16px"
             }}
-            onClick={() => setModalOpen(false)}
-          >
-            Close [X]
+            onClick={() => setModalOpen(false)}> [Close]
           </span>
+          Edit Day
         </h3>
       </div>
       <hr />
@@ -35,10 +41,12 @@ const EditCellModal: FC<editCellType> = ({ cellData, setModalOpen }) => {
       </div>
       <br />
       <div>
-        <textarea placeholder="day details..."></textarea>
+        <form onSubmit={(e: any) => handleSubmit(e)}>
+        <textarea id="dayDetails" placeholder="day details..."></textarea>
+        </form>
       </div>
-      <span> {cellData?.note.text} </span>
-      <span></span>
+      <span> {cellData?.note?.text} </span>
+      <button type="submit" style={{margin: "5px"}} className="btn btn-primary">Submit</button>
     </span>
   );
 };
