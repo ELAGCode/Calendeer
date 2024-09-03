@@ -4,31 +4,56 @@ import { calendarCellType } from "./Calendar";
 export type editCellType = {
   cellData: undefined | calendarCellType;
   setModalOpen: Dispatch<SetStateAction<boolean>>;
+  // TODO
+  setCellForm: Dispatch<SetStateAction<any>>;
 };
 
-const EditCellModal: FC<editCellType> = ({ cellData, setModalOpen }) => {
+export type editCellSubmission = {
+  details: string;
+};
 
-  const [calendarDetailText, setCalendarDetailText] = useState();
+export const editCellModalFormMapping = {
+  titleModalCellText: "titleCellText",
+  dayDetailsModalCellText: "dayDetailsCellText",
+};
 
-  const handleSubmit = (e) => {
-    console.log(e.target)
-  }
+const EditCellModal: FC<editCellType> = ({
+  cellData,
+  setModalOpen,
+  setCellForm,
+}) => {
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+
+    let data: { [key: PropertyKey]: PropertyKey | Object } = {};
+    const form = e.target.form;
+
+    for (let i = 0; i < form.length; i++) {
+      if (form[i].id) data[form[i].id] = form[i].value;
+    }
+    setModalOpen(false);
+    // TODO
+    setCellForm({ ...data });
+  };
 
   return (
     <span>
       <div>
         <h3>
           <span
-          // 'Close' button style
+            // 'Close' button style
             style={{
               display: "flex",
               fontSize: "12px",
               flexDirection: "row-reverse",
-              paddingRight: "16px"
+              paddingRight: "16px",
             }}
-            onClick={() => setModalOpen(false)}> [Close]
+            onClick={() => setModalOpen(false)}
+          >
+            [Close]
           </span>
-          Edit Day
+          Edit Day {cellData?.day}
         </h3>
       </div>
       <hr />
@@ -41,12 +66,41 @@ const EditCellModal: FC<editCellType> = ({ cellData, setModalOpen }) => {
       </div>
       <br />
       <div>
-        <form onSubmit={(e: any) => handleSubmit(e)}>
-        <textarea id="dayDetails" placeholder="day details..."></textarea>
+        <form id="editCellModal">
+          <div>{cellData?.note?.text}</div>
+          <br />
+          <div>
+            <input
+              form="editCellModal"
+              id={editCellModalFormMapping.titleModalCellText}
+              placeholder="Optional title"
+            />
+          </div>
+          <div>
+            <textarea
+              form="editCellModal"
+              style={{
+                overflow: "hidden",
+                padding: "5px",
+                margin: "5px",
+                borderRadius: "5px",
+              }}
+              wrap="off"
+              defaultValue={""}
+              id={editCellModalFormMapping.dayDetailsModalCellText}
+              placeholder={" Day details..."}
+            />
+          </div>
+          <button
+            onClick={(e) => handleSubmit(e)}
+            type="submit"
+            style={{ margin: "15px" }}
+            className="btn btn-primary"
+          >
+            Submit
+          </button>
         </form>
       </div>
-      <span> {cellData?.note?.text} </span>
-      <button type="submit" style={{margin: "5px"}} className="btn btn-primary">Submit</button>
     </span>
   );
 };

@@ -2,6 +2,7 @@ import { calendarCellType } from "./Calendar";
 
 export const mockData: calendarCellType[] = [
   {
+    id: 0,
     hasNote: false,
     hasSchedule: false,
     note: {
@@ -16,6 +17,7 @@ export const mockData: calendarCellType[] = [
     year: 2023,
   },
   {
+    id: 1,
     hasNote: true,
     hasSchedule: true,
     note: {
@@ -30,6 +32,7 @@ export const mockData: calendarCellType[] = [
     year: 2022,
   },
   {
+    id: 2,
     hasNote: true,
     hasSchedule: true,
     note: {
@@ -44,6 +47,7 @@ export const mockData: calendarCellType[] = [
     year: 2021,
   },
   {
+    id: 3,
     hasNote: true,
     hasSchedule: true,
     note: {
@@ -58,6 +62,7 @@ export const mockData: calendarCellType[] = [
     year: 2020,
   },
   {
+    id: 4,
     hasNote: true,
     hasSchedule: true,
     note: {
@@ -72,6 +77,7 @@ export const mockData: calendarCellType[] = [
     year: 2021,
   },
   {
+    id: 5,
     hasNote: true,
     hasSchedule: true,
     note: {
@@ -86,6 +92,7 @@ export const mockData: calendarCellType[] = [
     year: 2026,
   },
   {
+    id: 6,
     hasNote: true,
     hasSchedule: true,
     note: {
