@@ -50,7 +50,7 @@ const Calendar: FC<calendarType> = ({ calendarData }) => {
         year: 2024,
         hasSchedule: false,
         hasNote: true,
-        note: { text: "test note" },
+        note: { text: `test note text for date ${idx + 1} ${year}` },
         //if schedule is true then schedule will be read and processed
         schedule: { date: "", details: {} },
       };
@@ -58,7 +58,7 @@ const Calendar: FC<calendarType> = ({ calendarData }) => {
   );
 
   useEffect(() => {
-    setCurrentMonthDays(daysInMonth(year, month));
+    setCurrentMonthDays(daysInMonth(year, month) - 1);
   }, [month, year, cellForm]);
 
   const handleCalendarCellClick = (_: any, index: number) => {
@@ -67,19 +67,21 @@ const Calendar: FC<calendarType> = ({ calendarData }) => {
   };
 
   return (
-    <span style={CalendarStyles.calendarCellContainerStyle}>
-      {calendarCellObjectsFilled.map((cell: calendarCellType, index) => {
-        //Calendar cells filled
-        return (
-          <span
-            key={cell.id}
-            style={CalendarStyles.calendarCellStyle}
-            onClick={(e) => handleCalendarCellClick(e, index)}
-          >
-            {cell?.day}
-          </span>
-        );
-      })}
+    <>
+      <span style={CalendarStyles.calendarCellContainerStyle}>
+        {calendarCellObjectsFilled.map((cell: calendarCellType, index) => {
+          //Calendar cells filled
+          return (
+            <span
+              key={cell.id}
+              style={CalendarStyles.calendarCellStyle}
+              onClick={(e) => handleCalendarCellClick(e, index)}
+            >
+              {cell?.day}
+            </span>
+          );
+        })}
+      </span>
       {/* EDIT MODAL */}
       {modalOpen ? (
         <>
@@ -100,17 +102,17 @@ const Calendar: FC<calendarType> = ({ calendarData }) => {
       ) : (
         <></>
       )}
-    </span>
+    </>
   );
 };
 
 //experimental way of organizing styles
 export const CalendarStyles = {
   editModalStyle: {
-    left: "30%",
-    right: "30%",
+    left: "10%",
+    right: "10%",
+    top: "30%",
     position: "absolute",
-    transform: "translateY(-10%)",
     background: "darkgray",
     borderRadius: "10px ",
   } as CSSProperties,
@@ -124,9 +126,13 @@ export const CalendarStyles = {
   } as CSSProperties,
   calendarCellStyle: {
     border: "1px solid gray",
+    padding: "10px",
+    paddingRight: "10px",
+    paddingBottom: "70px"
   } as CSSProperties,
   calendarCellContainerStyle: {
-    display: "grid",
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr 1fr',
   } as CSSProperties,
 };
 
