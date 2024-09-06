@@ -2,6 +2,7 @@ import { FC, useEffect, useState } from "react";
 import EditCellModal from "./EditCellModal";
 // import { mockData } from "./mockData";
 import { CSSProperties } from "react";
+
 export type calendarType = {
   calendarData: calendarCellType[] | any[];
 };
@@ -33,10 +34,12 @@ const month = new Date().getMonth();
 const year = new Date().getFullYear();
 
 const Calendar: FC<calendarType> = ({ calendarData }) => {
+
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [calendarIndex, setCalendarIndex] = useState<number | undefined>();
   const [currentMonthDays, setCurrentMonthDays] = useState<number>();
   const [cellForm, setCellForm] = useState({});
+  const [viewPortWidth, setViewPortWidth] = useState<number | null>();
 
   // create cells of empty objects
   const calendarCellObjects = Array(currentMonthDays).fill({});
@@ -58,8 +61,13 @@ const Calendar: FC<calendarType> = ({ calendarData }) => {
   );
 
   useEffect(() => {
+    window.addEventListener('resize', () => setViewPortWidth(window.innerWidth));
+  }, [])
+ 
+  useEffect(() => {
     setCurrentMonthDays(daysInMonth(year, month) - 1);
-  }, [month, year, cellForm]);
+    setViewPortWidth(window.innerWidth)
+  }, [month, year, cellForm, viewPortWidth]);
 
   const handleCalendarCellClick = (_: any, index: number) => {
     setModalOpen(true);
@@ -74,11 +82,12 @@ const Calendar: FC<calendarType> = ({ calendarData }) => {
           return (
             <span
               key={cell.id}
-              style={CalendarStyles.calendarCellStyle}
-              onClick={(e) => handleCalendarCellClick(e, index)}
-            >
-              {cell?.day}
-            </span>
+              style={{
+                ...CalendarStyles.calendarCellStyle,
+                ...((viewPortWidth || 0) <= 1024 ? 
+                { paddingRight: "10px" } : { paddingRight: "70px"})}}
+              onClick={(e) => handleCalendarCellClick(e, index)}> 
+            {cell?.day} </span>
           );
         })}
       </span>
@@ -94,9 +103,7 @@ const Calendar: FC<calendarType> = ({ calendarData }) => {
               cellData={
                 typeof calendarIndex === "number"
                   ? calendarCellObjectsFilled[calendarIndex]
-                  : ({} as calendarCellType)
-              }
-            />
+                  : ({} as calendarCellType)}/>
           </span>
         </>
       ) : (
@@ -128,11 +135,12 @@ export const CalendarStyles = {
     border: "1px solid gray",
     padding: "10px",
     paddingRight: "10px",
-    paddingBottom: "70px"
+    paddingBottom: "70px",
+    transition: 'padding 0.3s'
   } as CSSProperties,
   calendarCellContainerStyle: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr 1fr',
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr 1fr 1fr",
   } as CSSProperties,
 };
 
